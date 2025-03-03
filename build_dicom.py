@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
-import dicom
+import pydicom as dicom
 import time
 import uuid
 import sys
@@ -155,7 +155,6 @@ for study in args.studies:
             rtstruct = sb.build_structure_set()
         else:
             assert "Unknown modality"
-
         for value in series.values:
             value = value.split(",")
             if len(value) == 1 and (value[0][0].isdigit() or value[0][0] == '-'):
@@ -298,5 +297,5 @@ for study in args.studies:
                     rtstruct.add_box(name=name, size=size, center=center, interpreted_type=interpreted_type)
                 elif shape == "external":
                     rtstruct.add_external_box()
-            rtstruct.build()
+            rtstruct.build()  
 sb.write(args.outdir)

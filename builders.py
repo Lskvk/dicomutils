@@ -177,11 +177,16 @@ class StudyBuilder(object):
     def write(self, outdir='.', print_filenames=False):
         for modality in self.modalityorder:
             for sb in self.seriesbuilders[modality]:
-                print modality, sb
+                print(modality, sb)
                 for ds in sb.build():
-                    dicom.write_file(os.path.join(outdir, ds.filename), ds)
-                    if print_filenames:
-                        print ds.filename
+                    # Ensure the preamble is a bytes object, not a string.
+                    if isinstance(ds.preamble, str):
+                        ds.preamble = ds.preamble.encode('utf-8')
+                    with open(os.path.join(outdir, ds.filename), 'wb') as outfile:
+                        dicom.dcmwrite(outfile, ds)
+                        if print_filenames:
+                            print(ds.filename)
+
 
 
 class CTBuilder(ImageBuilder):
